@@ -1,0 +1,79 @@
+create 2 ec2-instances 
+with sec group rules
+ssh 22
+http 80
+https 443
+custom tcp 8080 custom 0.0.0.0/0
+
+name 1 jenkins-server 
+name 2 remote-server
+
+on jenkins server install jenkins
+
+sudo yum update -y
+
+Run below commands to install Java 8 on Amazon Linux:
+
+sudo yum install java-1.8.0-openjdk
+
+java -version
+if already prsesnt 1.7 then switch to java 1.8 by
+
+alternatives --config java
+type number:
+
+java -version
+
+from https://pkg.jenkins.io/redhat-stable/ Run below commands
+
+sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+yum install jenkins
+
+for rhel <=7  ami-linux
+[ec2-user ~]$ sudo service jenkins start
+To start the jenkins service at boot-up, you can run,
+[ec2-user ~]$ chkconfig jenkins on
+
+
+for rhel >=7 ami-linux2
+[ec2-user ~]$ systemctl start jenkins.service
+[ec2-user ~]$ systemctl enable jenkins.service
+
+
+open on browser http://server-ip-address:8080/
+
+install plugin login with password  sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+after install and start jenkins dashboard install ssh plugin and restart
+
+then
+
+goto manage-jenkins--->manage credentials--->jenkins--->global-credentials--->add credentials
+kind ssh name with private key
+username - ec2-user
+add and paste private key of ec2-instance name remote-server key eg script.pem
+
+save
+
+then go to 
+manage-jenkins----> configure system---ssh remote host--->add remote host
+hostname hostname-of-remote-server
+port 22
+select ec2-user in credential tab
+
+save
+
+
+then goto new item name remote-job
+add build step - execute shell script on remote host using ssh
+ssh site select ec2-user@ip-----:22
+
+command -- 
+Name=Badal
+echo "Hello, $Name. The current date and time is: $(date)" > /tmp/remote-file
+
+save and build now
+success
+
+then got to remote-server moba terminal cd /tmp/ and ll you see file remote-file
