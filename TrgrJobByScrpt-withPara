@@ -1,0 +1,19 @@
+On jenkins dash
+create job new item name - crum-with-para
+select execute shell with parameters
+
+execute shell command /var/lib/jenkins/script.sh
+
+script.sh on jenkins servers this path /var/lib/jenkins/
+#!/bin/bash
+name=$1
+last=$2
+echo "Hello $1 $2"
+
+
+create script like below
+#!/bin/bash
+crumb=$(curl -u "admin:redhat" -s 'http://ubu:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)')
+curl -u "admin:redhat" -H "$crumb" -X POST http://ubu:8080/job/crumb-with-para/buildWithParameters?name=Pandu&last=Hawaldar
+
+crumb-with-para is job name
