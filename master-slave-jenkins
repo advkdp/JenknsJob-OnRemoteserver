@@ -1,0 +1,41 @@
+master
+=======
+java installed
+jenkins installed
+su - jenkins
+ssh-keygen
+ssh-copy-id slave-user@ip-address
+if connect then work on jenkins also
+                                     ==== salve server
+                                            java installed
+                                            user connect eg su - adminuser mkdir slave cd slave pwd-path-->/home/adminuser/slave
+                                            
+then open jenkins dashboard
+goto manage-jenkins-->manage nodes-->NewNode-->node-Name- centos check(permanent agent)
+                                               remote root dir- /home/adminuser/slave
+                                               Label centos-slave
+                                               launch-Method- launch agent via ssh
+                                               host - ip-address of slave server
+                                               credential ---- add->jenkins-> kind- username with password
+                                                                              username adminuser
+                                                                              password paswword-of-adminuser
+                                                                              description adminuser1
+                                                                              once created got to above credentials
+                                                                              in dropdown adminuser1 came select it u see
+                                                                   credential adminuser/*****(adminuser1)           
+                                               Host-Key Verify strategy - Manual Trusted key verification strategy
+                                                                          Require manual verification of initial connection box uncheck
+                                               & save
+                                               
+then goto Job item-name- test-master-slave
+check box of  Restrict where this project can be run
+Label centos-slave
+
+Build step execute shell command echo "testing master slave config" > /home/adminuser/slave/info.txt
+save & build
+
+after build success go to slave server under path /home/adminuser/slave/ 
+do ll or ls you see info.txt and workspace folder(which contain you job name i.e test-master-slave)
+                                                                              
+                                            
+                                           
